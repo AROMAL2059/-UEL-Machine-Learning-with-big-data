@@ -1,0 +1,1157 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPyp3GPqO2pLtH8o4J6RgQd",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/AROMAL2059/-UEL-Machine-Learning-with-big-data/blob/main/Week_1%3DMaster%E2%80%99s%20Project%20%E2%80%93%20Data%20Processing%20%26%20Analysis%20with%20PySpark\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "nHPqvIpAlY-q",
+        "outputId": "3f1f756b-834f-4c66-e51a-f4557441923b"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting pyspark\n",
+            "  Downloading pyspark-3.5.0.tar.gz (316.9 MB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m316.9/316.9 MB\u001b[0m \u001b[31m3.9 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25h  Preparing metadata (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "Requirement already satisfied: py4j==0.10.9.7 in /usr/local/lib/python3.10/dist-packages (from pyspark) (0.10.9.7)\n",
+            "Building wheels for collected packages: pyspark\n",
+            "  Building wheel for pyspark (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for pyspark: filename=pyspark-3.5.0-py2.py3-none-any.whl size=317425345 sha256=6db324d1c21b0bc1ebc367acaa1769c29e384bdadf7444c7203ce93da0166fd0\n",
+            "  Stored in directory: /root/.cache/pip/wheels/41/4e/10/c2cf2467f71c678cfc8a6b9ac9241e5e44a01940da8fbb17fc\n",
+            "Successfully built pyspark\n",
+            "Installing collected packages: pyspark\n",
+            "Successfully installed pyspark-3.5.0\n"
+          ]
+        }
+      ],
+      "source": [
+        "!pip3 install pyspark"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "h7VoaB4dizVI"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from pyspark.sql import SparkSession"
+      ],
+      "metadata": {
+        "id": "_djdz1Oati-j"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pyspark\n",
+        "from pyspark.sql import SparkSession\n",
+        "\n",
+        "spark = SparkSession.builder.appName(\"Tutorial1_CN7030\") \\\n",
+        "                            .master(\"local[*]\")\\\n",
+        "                            .config(\"spark.some.config.option\", \"some-value\") \\\n",
+        "                            .getOrCreate()"
+      ],
+      "metadata": {
+        "id": "ATpnCS0nt7xb"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# PySpark DataFrame with Explicit Schema\n",
+        "df = spark.createDataFrame([\n",
+        "    (1, 87.0, 'Mike', 'math', 'passed'),\n",
+        "    (2, 60.5, 'Mike', 'computing', 'failed'),\n",
+        "    (3, 20.8, 'Mina', 'networking', 'passed'),\n",
+        "    (4, 41.0, 'Emmy', 'math', 'failed'),\n",
+        "    (5, 39.0, 'Alex', 'computing', 'failed'),\n",
+        "    (6, 55.8, 'Alex', 'AI', 'passed'),\n",
+        "    (7, 74.0, 'Emmy', 'AI', 'passed'),\n",
+        "    ], schema = 'ID int, Mark double, Name string, Lesson string, Status string')\n",
+        "\n",
+        "# show table\n",
+        "df.show()\n",
+        "\n",
+        "# show schema\n",
+        "df.printSchema()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-CmIuLgVtADC",
+        "outputId": "5c4a9230-91a8-40ca-eb4d-bd63f902212b"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+---+----+----+----------+------+\n",
+            "| ID|Mark|Name|    Lesson|Status|\n",
+            "+---+----+----+----------+------+\n",
+            "|  1|87.0|Mike|      math|passed|\n",
+            "|  2|60.5|Mike| computing|failed|\n",
+            "|  3|20.8|Mina|networking|passed|\n",
+            "|  4|41.0|Emmy|      math|failed|\n",
+            "|  5|39.0|Alex| computing|failed|\n",
+            "|  6|55.8|Alex|        AI|passed|\n",
+            "|  7|74.0|Emmy|        AI|passed|\n",
+            "+---+----+----+----------+------+\n",
+            "\n",
+            "root\n",
+            " |-- ID: integer (nullable = true)\n",
+            " |-- Mark: double (nullable = true)\n",
+            " |-- Name: string (nullable = true)\n",
+            " |-- Lesson: string (nullable = true)\n",
+            " |-- Status: string (nullable = true)\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data = [[295, \"South Bend\", \"Indiana\",  101190, 112.9]]\n",
+        "columns = [\"rank\", \"city\", \"state\",  \"population\", \"price\"]\n",
+        "\n",
+        "df1 = spark.createDataFrame(data, schema=\"rank LONG, city STRING, state STRING,  population LONG, price DOUBLE\")\n",
+        "display(df1)\n",
+        "df1.show()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 139
+        },
+        "id": "TWCqJYXtuB1i",
+        "outputId": "f039dc91-e367-4b2d-e0ef-7b4a9449c70c"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "DataFrame[rank: bigint, city: string, state: string, population: bigint, price: double]"
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+----+----------+-------+----------+-----+\n",
+            "|rank|      city|  state|population|price|\n",
+            "+----+----------+-------+----------+-----+\n",
+            "| 295|South Bend|Indiana|    101190|112.9|\n",
+            "+----+----------+-------+----------+-----+\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "df_pandas = pd.DataFrame(np.random.randint(0,200,size=(100000, 5)), columns=list('ABCDE'))"
+      ],
+      "metadata": {
+        "id": "I8H2jro1v4e0"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df_pandas.head(100)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 424
+        },
+        "id": "FH8jtTkeyb11",
+        "outputId": "a3b65768-9034-412e-dca0-940ca9cc3c2c"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "      A    B    C    D    E\n",
+              "0   183   74  121   63    8\n",
+              "1   192  194   93  166  128\n",
+              "2   140  173    0  104   27\n",
+              "3   181   38    6  174  171\n",
+              "4   197  195  133  198  181\n",
+              "..  ...  ...  ...  ...  ...\n",
+              "95   71   30   19   47   45\n",
+              "96  175  194  152   32  130\n",
+              "97   15    2  127  164  121\n",
+              "98   84   43  185   57   85\n",
+              "99   35   38  172   88   14\n",
+              "\n",
+              "[100 rows x 5 columns]"
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-c882e75b-a07f-4d5e-a795-bd2f6b52dafa\" class=\"colab-df-container\">\n",
+              "    <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>A</th>\n",
+              "      <th>B</th>\n",
+              "      <th>C</th>\n",
+              "      <th>D</th>\n",
+              "      <th>E</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>183</td>\n",
+              "      <td>74</td>\n",
+              "      <td>121</td>\n",
+              "      <td>63</td>\n",
+              "      <td>8</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>192</td>\n",
+              "      <td>194</td>\n",
+              "      <td>93</td>\n",
+              "      <td>166</td>\n",
+              "      <td>128</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>140</td>\n",
+              "      <td>173</td>\n",
+              "      <td>0</td>\n",
+              "      <td>104</td>\n",
+              "      <td>27</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>181</td>\n",
+              "      <td>38</td>\n",
+              "      <td>6</td>\n",
+              "      <td>174</td>\n",
+              "      <td>171</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>197</td>\n",
+              "      <td>195</td>\n",
+              "      <td>133</td>\n",
+              "      <td>198</td>\n",
+              "      <td>181</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>...</th>\n",
+              "      <td>...</td>\n",
+              "      <td>...</td>\n",
+              "      <td>...</td>\n",
+              "      <td>...</td>\n",
+              "      <td>...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>95</th>\n",
+              "      <td>71</td>\n",
+              "      <td>30</td>\n",
+              "      <td>19</td>\n",
+              "      <td>47</td>\n",
+              "      <td>45</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>96</th>\n",
+              "      <td>175</td>\n",
+              "      <td>194</td>\n",
+              "      <td>152</td>\n",
+              "      <td>32</td>\n",
+              "      <td>130</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>97</th>\n",
+              "      <td>15</td>\n",
+              "      <td>2</td>\n",
+              "      <td>127</td>\n",
+              "      <td>164</td>\n",
+              "      <td>121</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>98</th>\n",
+              "      <td>84</td>\n",
+              "      <td>43</td>\n",
+              "      <td>185</td>\n",
+              "      <td>57</td>\n",
+              "      <td>85</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>99</th>\n",
+              "      <td>35</td>\n",
+              "      <td>38</td>\n",
+              "      <td>172</td>\n",
+              "      <td>88</td>\n",
+              "      <td>14</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "<p>100 rows × 5 columns</p>\n",
+              "</div>\n",
+              "    <div class=\"colab-df-buttons\">\n",
+              "\n",
+              "  <div class=\"colab-df-container\">\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-c882e75b-a07f-4d5e-a795-bd2f6b52dafa')\"\n",
+              "            title=\"Convert this dataframe to an interactive table.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
+              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "\n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-buttons div {\n",
+              "      margin-bottom: 4px;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "    <script>\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#df-c882e75b-a07f-4d5e-a795-bd2f6b52dafa button.colab-df-convert');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      async function convertToInteractive(key) {\n",
+              "        const element = document.querySelector('#df-c882e75b-a07f-4d5e-a795-bd2f6b52dafa');\n",
+              "        const dataTable =\n",
+              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                    [key], {});\n",
+              "        if (!dataTable) return;\n",
+              "\n",
+              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "          + ' to learn more about interactive tables.';\n",
+              "        element.innerHTML = '';\n",
+              "        dataTable['output_type'] = 'display_data';\n",
+              "        await google.colab.output.renderOutput(dataTable, element);\n",
+              "        const docLink = document.createElement('div');\n",
+              "        docLink.innerHTML = docLinkHtml;\n",
+              "        element.appendChild(docLink);\n",
+              "      }\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "\n",
+              "<div id=\"df-f20864b2-28c5-4c29-b2b7-9157c9e301f1\">\n",
+              "  <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-f20864b2-28c5-4c29-b2b7-9157c9e301f1')\"\n",
+              "            title=\"Suggest charts\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "     width=\"24px\">\n",
+              "    <g>\n",
+              "        <path d=\"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z\"/>\n",
+              "    </g>\n",
+              "</svg>\n",
+              "  </button>\n",
+              "\n",
+              "<style>\n",
+              "  .colab-df-quickchart {\n",
+              "      --bg-color: #E8F0FE;\n",
+              "      --fill-color: #1967D2;\n",
+              "      --hover-bg-color: #E2EBFA;\n",
+              "      --hover-fill-color: #174EA6;\n",
+              "      --disabled-fill-color: #AAA;\n",
+              "      --disabled-bg-color: #DDD;\n",
+              "  }\n",
+              "\n",
+              "  [theme=dark] .colab-df-quickchart {\n",
+              "      --bg-color: #3B4455;\n",
+              "      --fill-color: #D2E3FC;\n",
+              "      --hover-bg-color: #434B5C;\n",
+              "      --hover-fill-color: #FFFFFF;\n",
+              "      --disabled-bg-color: #3B4455;\n",
+              "      --disabled-fill-color: #666;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart {\n",
+              "    background-color: var(--bg-color);\n",
+              "    border: none;\n",
+              "    border-radius: 50%;\n",
+              "    cursor: pointer;\n",
+              "    display: none;\n",
+              "    fill: var(--fill-color);\n",
+              "    height: 32px;\n",
+              "    padding: 0;\n",
+              "    width: 32px;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart:hover {\n",
+              "    background-color: var(--hover-bg-color);\n",
+              "    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "    fill: var(--button-hover-fill-color);\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart-complete:disabled,\n",
+              "  .colab-df-quickchart-complete:disabled:hover {\n",
+              "    background-color: var(--disabled-bg-color);\n",
+              "    fill: var(--disabled-fill-color);\n",
+              "    box-shadow: none;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-spinner {\n",
+              "    border: 2px solid var(--fill-color);\n",
+              "    border-color: transparent;\n",
+              "    border-bottom-color: var(--fill-color);\n",
+              "    animation:\n",
+              "      spin 1s steps(1) infinite;\n",
+              "  }\n",
+              "\n",
+              "  @keyframes spin {\n",
+              "    0% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "      border-left-color: var(--fill-color);\n",
+              "    }\n",
+              "    20% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    30% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    40% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    60% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    80% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "    90% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "  }\n",
+              "</style>\n",
+              "\n",
+              "  <script>\n",
+              "    async function quickchart(key) {\n",
+              "      const quickchartButtonEl =\n",
+              "        document.querySelector('#' + key + ' button');\n",
+              "      quickchartButtonEl.disabled = true;  // To prevent multiple clicks.\n",
+              "      quickchartButtonEl.classList.add('colab-df-spinner');\n",
+              "      try {\n",
+              "        const charts = await google.colab.kernel.invokeFunction(\n",
+              "            'suggestCharts', [key], {});\n",
+              "      } catch (error) {\n",
+              "        console.error('Error during call to suggestCharts:', error);\n",
+              "      }\n",
+              "      quickchartButtonEl.classList.remove('colab-df-spinner');\n",
+              "      quickchartButtonEl.classList.add('colab-df-quickchart-complete');\n",
+              "    }\n",
+              "    (() => {\n",
+              "      let quickchartButtonEl =\n",
+              "        document.querySelector('#df-f20864b2-28c5-4c29-b2b7-9157c9e301f1 button');\n",
+              "      quickchartButtonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "    })();\n",
+              "  </script>\n",
+              "</div>\n",
+              "    </div>\n",
+              "  </div>\n"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 20
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df2 = spark.createDataFrame(df_pandas)\n",
+        "\n",
+        "# show table\n",
+        "df2.show()\n",
+        "\n",
+        "# show schema\n",
+        "df2.printSchema()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "9j9jksOlwLQE",
+        "outputId": "45ab1a19-7ecc-4d41-bf02-91fb3a2ac2f3"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+---+---+---+---+---+\n",
+            "|  A|  B|  C|  D|  E|\n",
+            "+---+---+---+---+---+\n",
+            "|183| 74|121| 63|  8|\n",
+            "|192|194| 93|166|128|\n",
+            "|140|173|  0|104| 27|\n",
+            "|181| 38|  6|174|171|\n",
+            "|197|195|133|198|181|\n",
+            "|164|148|153|  3| 75|\n",
+            "|183| 77| 59| 91|114|\n",
+            "|180|  5|119| 20| 90|\n",
+            "| 50|122|141|121| 75|\n",
+            "| 30|154|106| 64|115|\n",
+            "|122|135|123| 79|166|\n",
+            "| 15|141|169|138|  5|\n",
+            "| 47|194| 54| 23| 97|\n",
+            "|185|131|191|  7| 77|\n",
+            "| 94|114| 96| 18|169|\n",
+            "|129|115|185| 94| 13|\n",
+            "|175|144| 91| 46|198|\n",
+            "| 53| 48|106|162|164|\n",
+            "|126|152|  7| 88|155|\n",
+            "| 51| 99|137| 85| 77|\n",
+            "+---+---+---+---+---+\n",
+            "only showing top 20 rows\n",
+            "\n",
+            "root\n",
+            " |-- A: long (nullable = true)\n",
+            " |-- B: long (nullable = true)\n",
+            " |-- C: long (nullable = true)\n",
+            " |-- D: long (nullable = true)\n",
+            " |-- E: long (nullable = true)\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(df2.count())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "RVGaSbf8zR91",
+        "outputId": "8847c1ba-3090-401e-d2d9-6280812deb89"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "100000\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Returns a DataFrame that combines the rows of df1 and df\n",
+        "print(\"rows in df\",df.count())\n",
+        "df.show()\n",
+        "print(\"rows in df1\",df1.count())\n",
+        "df1.show()\n",
+        "df3 = df1.union(df)\n",
+        "print(\"rows in df3\")\n",
+        "print(df3.count())\n",
+        "df3.show()\n",
+        "print(\"showing the data frame from the bottom\")\n",
+        "df3.tail(7)\n",
+        "df3.head(7)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Ok6GKZD_zai2",
+        "outputId": "65323776-696d-400c-adbb-aa06a45878ee"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "rows in df 7\n",
+            "+---+----+----+----------+------+\n",
+            "| ID|Mark|Name|    Lesson|Status|\n",
+            "+---+----+----+----------+------+\n",
+            "|  1|87.0|Mike|      math|passed|\n",
+            "|  2|60.5|Mike| computing|failed|\n",
+            "|  3|20.8|Mina|networking|passed|\n",
+            "|  4|41.0|Emmy|      math|failed|\n",
+            "|  5|39.0|Alex| computing|failed|\n",
+            "|  6|55.8|Alex|        AI|passed|\n",
+            "|  7|74.0|Emmy|        AI|passed|\n",
+            "+---+----+----+----------+------+\n",
+            "\n",
+            "rows in df1 1\n",
+            "+----+----------+-------+----------+-----+\n",
+            "|rank|      city|  state|population|price|\n",
+            "+----+----------+-------+----------+-----+\n",
+            "| 295|South Bend|Indiana|    101190|112.9|\n",
+            "+----+----------+-------+----------+-----+\n",
+            "\n",
+            "rows in df3\n",
+            "8\n",
+            "+----+----------+-------+----------+------+\n",
+            "|rank|      city|  state|population| price|\n",
+            "+----+----------+-------+----------+------+\n",
+            "| 295|South Bend|Indiana|    101190| 112.9|\n",
+            "|   1|      87.0|   Mike|      math|passed|\n",
+            "|   2|      60.5|   Mike| computing|failed|\n",
+            "|   3|      20.8|   Mina|networking|passed|\n",
+            "|   4|      41.0|   Emmy|      math|failed|\n",
+            "|   5|      39.0|   Alex| computing|failed|\n",
+            "|   6|      55.8|   Alex|        AI|passed|\n",
+            "|   7|      74.0|   Emmy|        AI|passed|\n",
+            "+----+----------+-------+----------+------+\n",
+            "\n",
+            "showing the data frame from the bottom\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[Row(rank=295, city='South Bend', state='Indiana', population='101190', price='112.9'),\n",
+              " Row(rank=1, city='87.0', state='Mike', population='math', price='passed'),\n",
+              " Row(rank=2, city='60.5', state='Mike', population='computing', price='failed'),\n",
+              " Row(rank=3, city='20.8', state='Mina', population='networking', price='passed'),\n",
+              " Row(rank=4, city='41.0', state='Emmy', population='math', price='failed'),\n",
+              " Row(rank=5, city='39.0', state='Alex', population='computing', price='failed'),\n",
+              " Row(rank=6, city='55.8', state='Alex', population='AI', price='passed')]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 24
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.describe()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "w_bWMB0G29gB",
+        "outputId": "b1ccfc80-a1ae-48e2-e6c0-31ad02d120ba"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "DataFrame[summary: string, ID: string, Mark: string, Name: string, Lesson: string, Status: string]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 32
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df3.head(7)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "gPn6wpSd0ET9",
+        "outputId": "0a9dd15d-a3c6-4313-f50d-e56e4ad23e1a"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[Row(rank=295, city='South Bend', state='Indiana', population='101190', price='112.9'),\n",
+              " Row(rank=1, city='87.0', state='Mike', population='math', price='passed'),\n",
+              " Row(rank=2, city='60.5', state='Mike', population='computing', price='failed'),\n",
+              " Row(rank=3, city='20.8', state='Mina', population='networking', price='passed'),\n",
+              " Row(rank=4, city='41.0', state='Emmy', population='math', price='failed'),\n",
+              " Row(rank=5, city='39.0', state='Alex', population='computing', price='failed'),\n",
+              " Row(rank=6, city='55.8', state='Alex', population='AI', price='passed')]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 25
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "Totpartition=df.rdd.getNumPartitions()\n",
+        "print(Totpartition)\n",
+        "newpartitiondf = df.repartition(4)\n",
+        "\n",
+        "print(newpartitiondf.rdd.getNumPartitions())\n",
+        "\n",
+        "# Repatition by column name into 4 partitions, check the df1 it has a column name city we want it to be in four paritition\n",
+        "df4 = df1.repartition(4, \"city\")\n",
+        "print(df4.rdd.getNumPartitions())\n",
+        "# Repatition by multiple columns\n",
+        "#df5 = df4.repartition(\"ColumnName1\",\"ColumnName2\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "m8f9MFd20ENW",
+        "outputId": "ba8dc290-f670-4eff-c384-5cddf3a1e0e1"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "2\n",
+            "4\n",
+            "4\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "myfile=\"/content/fifa_2018_players.csv\"\n",
+        "df_fifa = spark.read.format(\"csv\").load(myfile, inferSchema=True, header=True)"
+      ],
+      "metadata": {
+        "id": "5rHSP0lj03Rk"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# show table\n",
+        "df_fifa.show(5)\n",
+        "#How to drop the coloumn-unnamed:0\n",
+        "\n",
+        "# show schema\n",
+        "df_fifa.printSchema()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ymfj_M2b4uLO",
+        "outputId": "8ff4c6ef-2bdb-4773-8131-233796899654"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+---+----------+------+-----------------+---+--------------------+-----------+--------------------+-------+---------+-------------------+--------------------+------+-----+-------+\n",
+            "|_c0|Unnamed: 0|    ID|             Name|Age|               Photo|Nationality|                Flag|Overall|Potential|               Club|           Club Logo| Value| Wage|Special|\n",
+            "+---+----------+------+-----------------+---+--------------------+-----------+--------------------+-------+---------+-------------------+--------------------+------+-----+-------+\n",
+            "|  0|         0| 20801|Cristiano Ronaldo| 32|https://cdn.sofif...|   Portugal|https://cdn.sofif...|     94|       94|     Real Madrid CF|https://cdn.sofif...|€95.5M|€565K|   2228|\n",
+            "|  1|         1|158023|         L. Messi| 30|https://cdn.sofif...|  Argentina|https://cdn.sofif...|     93|       93|       FC Barcelona|https://cdn.sofif...| €105M|€565K|   2154|\n",
+            "|  2|         2|190871|           Neymar| 25|https://cdn.sofif...|     Brazil|https://cdn.sofif...|     92|       94|Paris Saint-Germain|https://cdn.sofif...| €123M|€280K|   2100|\n",
+            "|  3|         3|176580|        L. Suárez| 30|https://cdn.sofif...|    Uruguay|https://cdn.sofif...|     92|       92|       FC Barcelona|https://cdn.sofif...|  €97M|€510K|   2291|\n",
+            "|  4|         4|167495|         M. Neuer| 31|https://cdn.sofif...|    Germany|https://cdn.sofif...|     92|       92|   FC Bayern Munich|https://cdn.sofif...|  €61M|€230K|   1493|\n",
+            "+---+----------+------+-----------------+---+--------------------+-----------+--------------------+-------+---------+-------------------+--------------------+------+-----+-------+\n",
+            "only showing top 5 rows\n",
+            "\n",
+            "root\n",
+            " |-- _c0: integer (nullable = true)\n",
+            " |-- Unnamed: 0: integer (nullable = true)\n",
+            " |-- ID: integer (nullable = true)\n",
+            " |-- Name: string (nullable = true)\n",
+            " |-- Age: integer (nullable = true)\n",
+            " |-- Photo: string (nullable = true)\n",
+            " |-- Nationality: string (nullable = true)\n",
+            " |-- Flag: string (nullable = true)\n",
+            " |-- Overall: integer (nullable = true)\n",
+            " |-- Potential: integer (nullable = true)\n",
+            " |-- Club: string (nullable = true)\n",
+            " |-- Club Logo: string (nullable = true)\n",
+            " |-- Value: string (nullable = true)\n",
+            " |-- Wage: string (nullable = true)\n",
+            " |-- Special: integer (nullable = true)\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(df_fifa.count())\n",
+        "print(len(df_fifa.columns))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "tFH261S05KPw",
+        "outputId": "88a8fcf5-1b88-4228-de5f-c347f33653c8"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "17981\n",
+            "15\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Count rows using rdd attribute\n",
+        "row_count = df_fifa.rdd.count()\n",
+        "\n",
+        "print(f'The DataFrame has {row_count} rows.')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "glrHj9sl5jXK",
+        "outputId": "c335f0f8-285d-4bd4-80c3-c20a1ae52151"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "The DataFrame has 17981 rows.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df_fifa = df_fifa.repartition(4)\n",
+        "df_fifa.rdd.getNumPartitions()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "sy6EQ8Yc5omK",
+        "outputId": "4dcc2207-b32f-4949-f8c6-9cebb5788dbf"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "4"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 37
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "subset_Age = df_fifa.filter(df_fifa[\"Age\"] > 30)\n",
+        "subset_Age.show(10)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "EkatyH426AN2",
+        "outputId": "7417e60e-a285-4f2a-8718-a6023af80110"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+-----+----------+------+--------------------+---+--------------------+-----------+--------------------+-------+---------+--------------------+--------------------+------+----+-------+\n",
+            "|  _c0|Unnamed: 0|    ID|                Name|Age|               Photo|Nationality|                Flag|Overall|Potential|                Club|           Club Logo| Value|Wage|Special|\n",
+            "+-----+----------+------+--------------------+---+--------------------+-----------+--------------------+-------+---------+--------------------+--------------------+------+----+-------+\n",
+            "|  263|       263|183497|         O. Karnezis| 31|https://cdn.sofif...|     Greece|https://cdn.sofif...|     82|       82|             Watford|https://cdn.sofif...|€13.5M|€30K|   1212|\n",
+            "|10775|     10775|191458|          C. Valoyes| 33|https://cdn.sofif...|   Colombia|https://cdn.sofif...|     65|       65| Patriotas Boyacá FC|https://cdn.sofif...| €350K| €1K|   1666|\n",
+            "| 8845|      8845|191251|         A. Lambertz| 32|https://cdn.sofif...|    Germany|https://cdn.sofif...|     66|       66|   SG Dynamo Dresden|https://cdn.sofif...| €475K| €5K|   1909|\n",
+            "| 4626|      4626|126909|             M. Yüce| 32|https://cdn.sofif...|     Turkey|https://cdn.sofif...|     71|       71|           Bursaspor|https://cdn.sofif...| €1.4M|€12K|   1633|\n",
+            "| 3546|      3546|142677|         L. Desábato| 38|https://cdn.sofif...|  Argentina|https://cdn.sofif...|     72|       72|Estudiantes de La...|https://cdn.sofif...| €425K| €8K|   1485|\n",
+            "| 7375|      7375| 51116|M. Morisbak Skjøn...| 34|https://cdn.sofif...|     Norway|https://cdn.sofif...|     68|       68|      Stabæk Fotball|https://cdn.sofif...| €270K| €3K|   1593|\n",
+            "| 8878|      8878|192540|            M. Duffy| 31|https://cdn.sofif...|    England|https://cdn.sofif...|     66|       66|    Sheffield United|https://cdn.sofif...| €575K|€12K|   1713|\n",
+            "| 2227|      2227|163665|           D. Congré| 32|https://cdn.sofif...|     France|https://cdn.sofif...|     74|       74|Montpellier Hérau...|https://cdn.sofif...| €3.2M|€23K|   1653|\n",
+            "|10076|     10076|180789|            Y. Igawa| 34|https://cdn.sofif...|      Japan|https://cdn.sofif...|     65|       65|   Kawasaki Frontale|https://cdn.sofif...| €160K| €3K|   1603|\n",
+            "| 8021|      8021|206157|             L. Olum| 32|https://cdn.sofif...|      Kenya|https://cdn.sofif...|     67|       67|    Portland Timbers|https://cdn.sofif...| €450K| €5K|   1600|\n",
+            "+-----+----------+------+--------------------+---+--------------------+-----------+--------------------+-------+---------+--------------------+--------------------+------+----+-------+\n",
+            "only showing top 10 rows\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df_fifa.select(\"Name\",\"Club\").distinct().show(100)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "lA6n7iFh6PZl",
+        "outputId": "493638d4-ea46-4bd8-bbae-21f22f551630"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "+-----------------+--------------------+\n",
+            "|             Name|                Club|\n",
+            "+-----------------+--------------------+\n",
+            "|   V. Berezutskiy|         CSKA Moscow|\n",
+            "|        C. Vargas|Atletico Nacional...|\n",
+            "|       M. Dembélé|   Tottenham Hotspur|\n",
+            "| Mateus Gonçalves|    Deportivo Toluca|\n",
+            "|         J. Orlov|            SK Brann|\n",
+            "|     L. Coulibaly|          Angers SCO|\n",
+            "|          Rafinha|        FC Barcelona|\n",
+            "|     L. Tremolada|             Ternana|\n",
+            "|          J. Jach|      Zagłębie Lubin|\n",
+            "|    F. Bordagaray|  Defensa y Justicia|\n",
+            "|       P. Aguilar|San Martín de San...|\n",
+            "|       D. Dussaut|   Sint-Truidense VV|\n",
+            "|        H. Osorio|Independiente San...|\n",
+            "|  Samu Castillejo|       Villarreal CF|\n",
+            "|           J. Gol|          Amkar Perm|\n",
+            "|       E. Friberg|           BK Häcken|\n",
+            "|    M. Villasanti|           Temperley|\n",
+            "|       J. Cortizo|           Querétaro|\n",
+            "|        G. Castro|   Borussia Dortmund|\n",
+            "|        K. Kamara|New England Revol...|\n",
+            "|          A. Kano|            Al Fayha|\n",
+            "|      T. McCarron|          Finn Harps|\n",
+            "|     L. Chiaretti|          Cittadella|\n",
+            "|         D. Leahy|       Coventry City|\n",
+            "|         B. Roche|           Morecambe|\n",
+            "|        B. Foster|West Bromwich Albion|\n",
+            "|       Lee Kyu Ro|            FC Seoul|\n",
+            "|       C. Ramírez| Talleres de Cordoba|\n",
+            "|        J. Galván|   Colon de Santa Fe|\n",
+            "|          F. Lora|          Cittadella|\n",
+            "|             Eder|               Inter|\n",
+            "|        A. Araujo| Talleres de Cordoba|\n",
+            "|       L. Civelli|            Banfield|\n",
+            "|      G. Agbaljan|     Heracles Almelo|\n",
+            "|         A. Turan|        FC Barcelona|\n",
+            "|    M. van Bergen|             Vitesse|\n",
+            "|           S. Ojo|              Fulham|\n",
+            "|         A. Byrne|         Exeter City|\n",
+            "|      M. Mitrović|         SønderjyskE|\n",
+            "|      Yun Sang Ho|   Incheon United FC|\n",
+            "|      I. Maksimov|        Arsenal Tula|\n",
+            "|        J. Mojica|           Girona CF|\n",
+            "|      Kim Min Tae|Hokkaido Consadol...|\n",
+            "|        A. Agouda|     Strømsgodset IF|\n",
+            "|         T. Moore|     Cheltenham Town|\n",
+            "|      M. Vitzthum|SG Sonnenhof Groß...|\n",
+            "|       E. Sánchez|             Pachuca|\n",
+            "|        C. Clough|              Barnet|\n",
+            "|        S. Müller|          1. FC Köln|\n",
+            "|      A. Linganzi|        Swindon Town|\n",
+            "|        S. Grippo|       Real Zaragoza|\n",
+            "|         N. Leali|    SV Zulte-Waregem|\n",
+            "|        M. Cornet|  Olympique Lyonnais|\n",
+            "|      W. Larrondo|  Santiago Wanderers|\n",
+            "|    L. Stojanović|    Royal Antwerp FC|\n",
+            "|        A. Shunin|       Dinamo Moscow|\n",
+            "|     E. Fernandes|     West Ham United|\n",
+            "|        K. Piątek|            Cracovia|\n",
+            "|       E. Manjedo|CD Universidad de...|\n",
+            "|       P. Dziczek|       Piast Gliwice|\n",
+            "|    S. McLaughlin|     Southend United|\n",
+            "|         D. Silva|CD Los Millionari...|\n",
+            "|       E. Codesto|           Colo-Colo|\n",
+            "|         R. Yates|        Notts County|\n",
+            "|       M. Attiyah|           Ohod Club|\n",
+            "|     Narcisso Mau|            Vitória |\n",
+            "|       N. Poulsen|     Sarpsborg 08 FF|\n",
+            "|          J. Yaro|  Philadelphia Union|\n",
+            "|A. Wheeler-Omiunu|   Atlanta United FC|\n",
+            "|         M. Leahy|        Sligo Rovers|\n",
+            "|       C. Bolaños|Vancouver Whiteca...|\n",
+            "|           Y. Ito|     Kashima Antlers|\n",
+            "|    Erick Gameira|Grêmio Foot-Ball ...|\n",
+            "|          H. Mier|           Querétaro|\n",
+            "|      B. Urbański|           Willem II|\n",
+            "|    R. van Eijden|          AZ Alkmaar|\n",
+            "|        J. Hansen|      FC Midtjylland|\n",
+            "|         G. Denis| Club Atlético Lanús|\n",
+            "|        J. McCart|              Celtic|\n",
+            "|       L. Payares|     Deportivo Pasto|\n",
+            "|       K. Malcuit|          LOSC Lille|\n",
+            "|       Sergio Gil|             CD Lugo|\n",
+            "|      F. Melegoni|            Atalanta|\n",
+            "|          J. Rask|            Hobro IK|\n",
+            "|        J. Stobbs|           Port Vale|\n",
+            "|        V. Zúñiga|           Cruz Azul|\n",
+            "|  Sandelas Júnior|Clube Atlético Mi...|\n",
+            "| M. de los Santos|CD Los Millionari...|\n",
+            "|        S. Davies|            Rochdale|\n",
+            "|       C. Jullien|         Toulouse FC|\n",
+            "|       K. Bennett|          Portsmouth|\n",
+            "|      K. Constant|             FC Sion|\n",
+            "|           M. Taş|   Gençlerbirliği SK|\n",
+            "|     E. Sivertsen|     Kristiansund BK|\n",
+            "|       M. Barbosa|       Villarreal CF|\n",
+            "|     J. De Guzmán| Eintracht Frankfurt|\n",
+            "|     P. Slišković|       Hallescher FC|\n",
+            "|     Y. Wildschut|        Norwich City|\n",
+            "|     L. Blanchard|               Carpi|\n",
+            "|        A. Paroni|      Virtus Entella|\n",
+            "+-----------------+--------------------+\n",
+            "only showing top 100 rows\n",
+            "\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
